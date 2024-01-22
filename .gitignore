@@ -1,0 +1,10 @@
+venv
+.env*
+.DS_Store
+cache/*
+books/*
+__pycache__
+ping/
+node_modules/*
+
+
