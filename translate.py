@@ -64,6 +64,9 @@ kernel.add_chat_service("chat_completion",
     api_key=api_key)
 )
 
+# This is the "system prompt" used to instruct the LLM.
+# To change to a difference source or target language, you'd amend the prompt
+# below.
 TRANSLATE_PARAGRAPH_PROMPT = """
 You are an AI assistant to help editors translate books from English to Dutch.
 
@@ -113,7 +116,7 @@ chat_config_dict = {
   "system_prompt": TRANSLATE_PARAGRAPH_PROMPT,
 }
 
-
+# Note: This should be called translate_bot or similar, not dutch_bot.
 dutch_bot = kernel.register_semantic_function(
     skill_name="TranslationBot",
     function_name="translate_bot",
@@ -122,8 +125,6 @@ dutch_bot = kernel.register_semantic_function(
     ),
 )
 
-
-
 translate_chunk = kernel.create_semantic_function(
   TRANSLATE_PARAGRAPH_PROMPT,
   max_tokens=4000, 
@@ -131,15 +132,16 @@ translate_chunk = kernel.create_semantic_function(
   top_p=0.5
 )
 
+# Splits input markdown at `path` by Chapters, using custom logic per title.
+# Ideally, splitting by chapter is handled either by the input format (e.g.
+# .epub) containing a table of contents, or by totally automated AI. 
 def get_chapters(path):
-
   chapters = defaultdict(list)
   chapter_titles = []
   current_chapter = None
 
   with open(path) as f:
-    for index, line in enumerate(f):
-
+    for line in f:
       if line.startswith('Chapter '):
         current_chapter = line.split(' ')[-1].strip()
       elif line.startswith('Prologue'):
@@ -154,64 +156,3 @@ def get_chapters(path):
         continue
 
   return chapters
-
-def book_stats(chapters):
-  for chapter_name in chapters:
-    print(chapter_name)
-    lines = chapters[chapter_name]
-    text = '\n'.join(lines)
-    print('\t', len(lines), 'lines.')
-    print('\t', len(text), 'characters.')
-
-def print_zipped(zipped):
-  for source, translation in zipped:
-      print (source, '  |  ', translation)
-
-def translate_paragraphs(chapters, chapter_name):
-  chapter = chapters[chapter_name]
-  print ("Translating Chapter:", chapter_name)
-  for paragraph in chapter:
-    if not paragraph.strip(): 
-      continue
-    wrapped_paragraph = textwrap.fill(paragraph)
-    translated = translate_chunk(wrapped_paragraph)
-
-    wrapped_translated = textwrap.fill(str(translated))
-
-    zipped = list(itertools.zip_longest(
-        textwrap.wrap(str(paragraph).strip()),
-        textwrap.wrap(str(translated).strip()),
-        fillvalue=''
-    ))
-
-    for source, translation in zipped:
-      print (source.ljust(70), '  |  ', translation.ljust(70))
-
-    print ('-' * 145)
-    time.sleep(2)
-
-def translate_chapter(chapters, chapter_name):
-  chapter = chapters[chapter_name]
-  print ("Translating Chapter:", chapter_name)
-  lines = chapters[chapter_name]
-  text = ''.join(lines)
-
-  translated = translate(text)
-
-  print (translated)
-
-  return
-
-  wrapped_translated = textwrap.fill(str(translated))
-
-  zipped = list(itertools.zip_longest(
-      textwrap.wrap(str(text).strip()),
-      textwrap.wrap(str(translated).strip()),
-      fillvalue=''
-  ))
-
-  for source, translation in zipped:
-    print (source.ljust(70), '  |  ', translation.ljust(70))
-
-  print ('-' * 145)
-  time.sleep(2)

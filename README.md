@@ -1,4 +1,12 @@
+
+
 # Instructions
+
+1. Create a file named `.env` with the following keys.
+AZURE_OPENAI_DEPLOYMENT_NAME=<deployment name>
+AZURE_OPENAI_ENDPOINT=//<endpoint>.openai.azure.com/
+AZURE_OPENAI_API_KEY=
+
 
 1. First, activate your python environment.
 
