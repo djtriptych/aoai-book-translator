@@ -7,10 +7,14 @@ import argparse
 import hashlib
 import json
 import os
+import time
 
 from translate import dutch_bot
 
 CACHE_PATH = 'cache'
+
+# Time to pause between requests to AOAI to avoid rate limiting.
+PAUSE_SECONDS = 5
 
 def load_book(path):
   with open(path) as f:
@@ -25,8 +29,7 @@ def store(chunk, result):
 
   path = chunk_path(chunk)
   with open(path, 'w') as fp:
-    print ('wrote', path)
-    print (json.dumps(obj, indent=2))
+    print ('cache: ', path)
     json.dump(obj, fp)
 
 def chunk_path(chunk):
@@ -41,12 +44,17 @@ def fetch(chunk):
   with open(path) as fp:
     return json.load(fp)
 
+def fprint(chunk, length=50):
+  print ("  source:", ' '.join(chunk['source'][:length].split()))
+  print ("  result:", ' '.join(chunk['result'][:length].split()))
+
 def tx(chunk):
   cache_result = fetch(chunk)
   if cache_result:
-    print (cache_result)
+    fprint (cache_result)
     return
   result = dutch_bot(chunk)
+  time.sleep(PAUSE_SECONDS)
   store(chunk, result)
 
 def main(path):
@@ -57,9 +65,10 @@ def main(path):
       print(title)
       tx(title)
       for chunk in chapter:
-        print('...',chunk[:76])
         tx(chunk)
+
   except KeyboardInterrupt:
+    print('Caught interrupt')
     return
 
 # Set up argument parsing

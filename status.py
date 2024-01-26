@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 import os
+from collections import defaultdict
 
 from translate import translate_chunk, dutch_bot
 
@@ -21,16 +22,19 @@ def load_book(path):
 def main(path):
   book = load_book(path)
   chunks = 0
+  chapter_chunks = defaultdict(int)
   try:
     print('Chapters')
     for title in book:
       chapter = book[title]
       print('  - ', title)
       for chunk in chapter:
+        chapter_chunks[title] += 1
         chunks += 1
   except KeyboardInterrupt:
     return
   print (chunks, ' chunks')
+  print (chapter_chunks)
 
 # Set up argument parsing
 parser = argparse.ArgumentParser(

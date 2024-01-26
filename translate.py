@@ -14,7 +14,6 @@
 
 import os
 import textwrap
-import time
 import itertools
 import sys
 from collections import defaultdict
@@ -68,13 +67,11 @@ kernel.add_chat_service("chat_completion",
 # To change to a difference source or target language, you'd amend the prompt
 # below.
 TRANSLATE_PARAGRAPH_PROMPT = """
-You are an AI assistant to help editors translate books from English to Dutch.
+You are an AI assistant to help editors translate books from English to French.
 
-- Take the markdown input you receive and output ONLY the Dutch translation.
+- Take the markdown input you receive and output ONLY the French translation.
 - Match content and tone as closely as possible.
 - Match markdown formatting as closely as possible.
-- Where possible, use common Dutch idioms in place of English idioms, such as
-  "buiten het net" or "van het net af" for the english "off the grid".
 """
 
 dad_joke = kernel.create_semantic_function(

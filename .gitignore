@@ -6,5 +6,7 @@ books/*
 __pycache__
 ping/
 node_modules/*
+book.md
+book.json
 
 
