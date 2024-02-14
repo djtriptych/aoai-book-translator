@@ -12,7 +12,7 @@ AZURE_OPENAI_API_KEY=
 
   `source venv/bin/activate`
 
-  And install any dependencies you might need from `requirements.txt`
+   And install any dependencies you might need from `requirements.txt`
 
 1. Given a new book as a PDF, convert to markdown:
 

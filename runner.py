@@ -14,7 +14,7 @@ from translate import dutch_bot
 CACHE_PATH = 'cache'
 
 # Time to pause between requests to AOAI to avoid rate limiting.
-PAUSE_SECONDS = 5
+PAUSE_SECONDS = 10
 
 def load_book(path):
   with open(path) as f:
@@ -29,7 +29,8 @@ def store(chunk, result):
 
   path = chunk_path(chunk)
   with open(path, 'w') as fp:
-    print ('cache: ', path)
+    print ('cache store: ', path)
+    fprint (obj)
     json.dump(obj, fp)
 
 def chunk_path(chunk):
@@ -55,6 +56,7 @@ def tx(chunk):
     return
   result = dutch_bot(chunk)
   time.sleep(PAUSE_SECONDS)
+  print('pausing', PAUSE_SECONDS, 'seconds')
   store(chunk, result)
 
 def main(path):
