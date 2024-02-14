@@ -55,7 +55,9 @@ AZURE_OPENAI_API_KEY=
 
    `python runner.py book.json`
 
-
+4. To pull together all of the chunks, run `python markdown.py book.json` to
+   output a complete HTML representation of the book (which might then be
+   printed to PDF via your favorite web browser).
 
 
 ## Installation of Python Environment.
