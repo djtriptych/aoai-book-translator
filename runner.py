@@ -2,19 +2,18 @@
 Load a file named book.json at the current path
 """
 
-
 import argparse
 import hashlib
 import json
 import os
 import time
 
-from translate import dutch_bot
+from oai import translate
 
 CACHE_PATH = 'cache'
 
 # Time to pause between requests to AOAI to avoid rate limiting.
-PAUSE_SECONDS = 10
+PAUSE_SECONDS = 0
 
 def load_book(path):
   with open(path) as f:
@@ -24,7 +23,7 @@ def load_book(path):
 def store(chunk, result):
   obj = {
       "source": chunk,
-      "result": result.result,
+      "result": result,
   }
 
   path = chunk_path(chunk)
@@ -54,8 +53,7 @@ def tx(chunk):
   if cache_result:
     fprint (cache_result)
     return
-  result = dutch_bot(chunk)
-  time.sleep(PAUSE_SECONDS)
+  result = translate('english', 'spanish', chunk)
   print('pausing', PAUSE_SECONDS, 'seconds')
   store(chunk, result)
 
